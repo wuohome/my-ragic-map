@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2026 快樂春節環島</title>
+    <style>
+        :root {
+            --primary-color: #D32F2F; /* 春節紅 */
+            --accent-color: #FFC107; /* 金黃色 */
+            --bg-color: #f5f5f5;
+            --card-bg: #ffffff;
+            --text-color: #333333;
+            --info-btn-color: #FF9800; /* 介紹按鈕橘色 */
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Microsoft JhengHei", "Heiti TC", sans-serif;
+            background-color: var(--bg-color);
+            margin: 0;
+            padding-bottom: 90px; /* 預留底部選單空間 */
+            color: var(--text-color);
+            line-height: 1.5;
+        }
+
+        /* 頭部標題 */
+        header {
+            background: linear-gradient(135deg, #D32F2F, #B71C1C);
+            color: white;
+            padding: 20px 15px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        header h1 { margin: 0; font-size: 1.6rem; letter-spacing: 2px; }
+        header p { margin: 5px 0 0; font-size: 1rem; opacity: 0.9; }
+
+        /* 內容區塊 */
+        .container {
+            padding: 15px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* 每日頁面切換 */
+        .day-content { display: none; animation: fadeIn 0.3s; }
+        .day-content.active { display: block; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 卡片樣式 */
+        .card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border-top: 5px solid var(--primary-color);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+        .card-icon { font-size: 1.8rem; margin-right: 10px; }
+        .card-title { font-size: 1.4rem; font-weight: bold; color: var(--primary-color); margin: 0; }
+
+        .info-row { margin-bottom: 10px; font-size: 1.1rem; }
+        .info-title { font-weight: bold; color: #555; display: block; margin-top: 15px; font-size: 1.15rem; }
+        
+        /* 分隔線 */
+        .divider { margin: 20px 0; border: 0; border-top: 1px dashed #ccc; }
+
+        /* 標籤 */
+        .tags { margin-top: 5px; margin-bottom: 10px; }
+        .tag {
+            display: inline-block;
+            background: #eee;
+            color: #555;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            margin-right: 5px;
+        }
+        .tag.safe { background: #E8F5E9; color: #2E7D32; border: 1px solid #A5D6A7; }
+
+        /* 按鈕群組 */
+        .btn-group {
+            display: flex;
+            gap: 10px; /* 按鈕間距 */
+            margin-top: 10px;
+        }
+
+        /* 大按鈕 */
+        .btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex: 1; /* 讓兩個按鈕等寬 */
+            padding: 12px 5px;
+            border-radius: 8px;
+            text-align: center;
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: bold;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: transform 0.1s;
+        }
+        .btn:active { transform: scale(0.98); }
+        
+        .btn-map { background-color: #4285F4; color: white; } /* Google藍 */
+        .btn-hotel { background-color: #2E7D32; color: white; } /* 綠色 */
+        .btn-info { background-color: var(--info-btn-color); color: white; } /* 橘色 */
+        
+        .btn-alert { 
+            display: block; width: 100%; 
+            background-color: #FFF3E0; color: #E65100; border: 2px solid #FFB74D; 
+            cursor: default; padding: 15px; text-align: center;
+        }
+
+        /* 底部導航列 */
+        .navbar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            z-index: 1000;
+        }
+
+        .nav-item {
+            border: none;
+            background: none;
+            flex: 1;
+            text-align: center;
+            padding: 5px;
+            color: #888;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+        .nav-item div:first-child { font-size: 1.4rem; margin-bottom: 3px; }
+        .nav-item.active { color: var(--primary-color); font-weight: bold; }
+
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>🐎 2026 春節環島</h1>
+    <p>長輩舒適團．行程小幫手</p>
+</header>
+
+<!-- ================= 初一 ================= -->
+<div id="day1" class="day-content active container">
+    <div class="card" style="border-top-color: #FF5722;">
+        <div class="card-header">
+            <span class="card-icon">🚨</span>
+            <h3 class="card-title">今日重點提醒</h3>
+        </div>
+        <div class="btn-alert">
+            請務必 <strong>04:00</strong> 從平鎮出發<br>
+            <small>(06:30 前要通過蘇澳)</small>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <span class="card-icon">⛩️</span>
+            <h3 class="card-title">上午：推薦景點</h3>
+        </div>
+        
+        <div class="info-title">方案 A：花蓮港天宮</div>
+        <div class="info-row">花蓮最大媽祖廟，空間很大。</div>
+        <div class="tags"><span class="tag safe">✅ 有電梯</span><span class="tag safe">✅ 停車場大</span></div>
+        <div class="btn-group">
+            <a href="https://www.google.com/maps/search/?api=1&query=花蓮港天宮" target="_blank" class="btn btn-map">📍 導航</a>
+            <a href="https://www.gangtian.org.tw/" target="_blank" class="btn btn-info">📖 看介紹</a>
+        </div>
+        
+        <hr class="divider">
+
+        <div class="info-title">方案 B：知卡宣親水公園</div>
+        <div class="info-row">在吉安鄉，路面平坦寬闊，樹蔭多。</div>
+        <div class="tags"><span class="tag safe">✅ 適合輪椅</span><span class="tag safe">✅ 廁所乾淨</span></div>
+        <div class="btn-group">
+            <a href="https://www.google.com/maps/search/?api=1&query=知卡宣綠森林親水公園" target="_blank" class="btn btn-map">📍 導航</a>
+            <a href="https://tour-hualien.hl.gov.tw/TourContent.aspx?n=44&s=866" target="_blank" class="btn btn-info">📖 看介紹</a>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <span class="card-icon">🍲</span>
+            <h3 class="card-title">午餐：推薦餐廳</h3>
+        </div>
+        
+        <div class="info-title">方案 A：櫻之田野 (吉安)</div>
+        <div class="info-row">養生野菜火鍋，長輩愛喝熱湯。</div>
+        <div class="tags"><span class="tag safe">✅ 素食友善</span><span class="tag safe">✅ 好停車</span></div>
+        <div class="btn-group">
+            <a href="https://www.google.com/maps/search/?api=1&query=櫻之田野休閒養生館" target="_blank" class="btn btn-map">📍 導航</a>
+            <a href="http://www.038540366.com.tw/" target="_blank" class="btn btn-info">📖 看菜單</a>
+        </div>
+
+        <hr class="divider">
+
+        <div class="info-title">方案 B：芳草古樹 (鳳林)</div>
+        <div class="info-row">全平面菸樓建築，客家菜/合菜。</div>
+        <div class="tags"><span class="tag safe">✅ 擂茶體驗</span><span class="tag safe">✅ 有停車場</span></div>
+        <div class="btn-group">
+            <a href="https://www.google.com/maps/search/?api=1&query=芳草古樹花園民宿" target="_blank" class="btn btn-map">📍 導航</a>
+            <a href="https://fangshuh.com.tw/" target="_blank" class="btn btn-info">📖 看介紹</a>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <span class="card-icon">🏨</span>
+            <h3 class="card-title">今晚住宿：花蓮</h3>
+        </div>
+        <div class="info-title">方案 A：客亭商旅 (玉里)</div>
+        <div class="info-row"><small>全新大樓、離台東近</small></div>
+        <div class="btn-group">
+            <a href="https://www.google.com/maps/search/?api=1&query=客亭商旅" target="_blank" class="btn btn-hotel">🏨 導航</a>
+            <a href="https://www.keting-hotel.com.tw/" target="_blank" class="btn btn-info">📖 官網</a>
+        </div>
+        
+        <hr class="divider">
+        
+        <div class="info-title">方案 B：F Hotel (花蓮站前)</div>
+        <div class="info-row"><small>連鎖飯店、地下室有電梯</small></div>
+        <div class="btn-group">
+            <a href="https://www.google.com/maps/search/?api=1&query=F+Hotel+花蓮站前館" target="_blank" class="btn btn-hotel">🏨 導航</a>
+            <a href="http://hualien.fhotels.com.tw/" target="_blank" class="btn btn-info">📖 官網</a>
+        </div>
+    </div>
+</div>
+
+<!-- ================= 初二 ================= -->
+<div id="day2" class="day-content container">
+    <div class="card" style="border-top-color: #1976D2;">
+        <div class="card-header">
+            <span class="card-icon">🚗</span>
+            <h3 class="card-title">今日路線：花東縱谷</h3>
+        </div>
+        <div class="btn-alert" style="background:#E3F2FD; color:#0D47A1; border-color:#90CAF9;">
+            請走 <strong>台9線</strong> (山線)<br>
+            ❌ 不要走海線 (路彎易暈)
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <span class="card-icon">🌾</span>
+            <h3 class="card-title">下午：推薦景點</h3>
+        </div>
+
+        <div class="info-title">方案 A：池上農會 (金色豐收館)</div>
+        <div class="info-row">有冷氣、花海，避開伯朗大道人潮。</div>
+        <div class="tags"><span class="tag safe">✅ 室內平坦</span><span class="tag safe">✅ 好停車</span></div>
+        <div class="btn-group">
+            <a href="https://www.google.com/maps/search/?api=1&query=池上鄉農會觀光米廠" target="_blank" class="btn btn-map">📍 導航</a>
+            <a href="https://www.csfa.org.tw/" target="_blank" class="btn btn-info">📖 看介紹</a>
+        </div>
+
+        <hr class="divider">
+
+        <div class="info-title">方案 B：鹿野二層坪水橋</div>
+        <div class="info-row">紅白拱橋配花海，車停路邊就能拍。</div>
+        <div class="tags"><span class="tag safe">✅ 下車即景點</span><span class="tag safe">✅ 不用走</span></div>
+        <div class="btn-group">
+            <a href="https://www.google.com/maps/search/?api=1&query=二層坪水橋" target="_blank" class="btn btn-map">📍 導航</a>
+            <a href="https://tour.taitung.gov.tw/zh-tw/attraction/details/1169" target="_blank" class="btn btn-info">📖 看介紹</a>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <span class="card-icon">🍱</span>
+            <h3 class="card-title">午餐：推薦餐廳</h3>
+        </div>
+
+        <div class="info-title">方案 A：池上大地飯店</div>
+        <div class="info-row">知名的池上便當餐廳版，有桌子。</div>
+        <div class="tags"><span class="tag safe">✅ 素食便當</span><span class="tag safe">✅ 專屬停車場</span></div>
+        <div class="btn-group">
+            <a href="https://www.google.com/maps/search/?api=1&query=池上大地飯店" target="_blank" class="btn btn-map">📍 導航</a>
+            <a href="https://www.facebook.com/ricebox86/" target="_blank" class="btn btn-info">📖 FB粉專</a>
+        </div>
+
+        <hr class="divider">
+
+        <div class="info-title">方案 B：岩灣客棧 (卑南)</div>
+        <div class="info-row">風味合菜，避開市區排隊。</div>
+        <div class="tags"><span class="tag safe">✅ 空間大</span><span class="tag safe">✅ 有停車場</span></div>
+        <div class="btn-group">
+            <a href="https://www.google.com/maps/search/?api=1&query=岩灣客棧" target="_blank" class="btn btn-map">📍 導航</a>
+            <a href="https://www.facebook.com/yanwan106/" target="_blank" class="btn btn-info">📖 FB粉專</a>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <span class="card-icon">🏨</span>
+            <h3 class="card-title">今晚住宿：台東市</h3>
+        </div>
+        <div class="info-title">方案 A：娜路彎會館</div>
+        <div class="info-row"><small>無障礙設施完善、大電梯</small></div>
+        <div class="btn-group">
+            <a href="https://www.google.com/maps/search/?api=1&query=娜路彎會館" target="_blank" class="btn btn-hotel">🏨 導航</a>
+            <a href="https://www.naruwan-inn.com.tw/" target="_blank" class="btn btn-info">📖 官網</a>
+        </div>
+        
+        <hr class="divider">
+        
+        <div class="info-title">方案 B：地景澤行館</div>
+        <div class="info-row"><small>浴室平坦、新飯店</small></div>
+        <div class="btn-group">
+            <a href="https://www.google.com/maps/search/?api=1&query=地景澤行館" target="_blank" class="btn btn-hotel">🏨 導航</a>
+            <a href="http://www.thesuites-taitung.com/" target="_blank" class="btn btn-info">📖 官網</a>
+        </div>
+    </div>
+</div>
+
+<!-- ================= 初三 ================= -->
+<div id="day3" class="day-content container">
+    <div class="card" style="border-top-color: #D32F2F;">
+        <div class="card-header">
+            <span class="card-icon">⚠️</span>
+            <h3 class="card-title">千萬別去佛光山</h3>
+        </div>
+        <div class="btn-alert">
+            ❌ 初三是人潮最高峰<br>
+            ❌ 坡度太陡，阿公會非常辛苦
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <span class="card-icon">🎭</span>
+            <h3 class="card-title">下午：推薦景點</h3>
+        </div>
+
+        <div class="info-title">方案 A：衛武營藝術中心</div>
+        <div class="info-row">全平坦、半戶外通風，輪椅族天堂。</div>
+        <div class="tags"><span class="tag safe">✅ 遮陽避雨</span><span class="tag safe">✅ 電梯直達</span></div>
+        <div class="btn-group">
+            <a href="https://www.google.com/maps/search/?api=1&query=衛武營國家藝術文化中心" target="_blank" class="btn btn-map">📍 導航</a>
+            <a href="https://www.npac-weiwuying.org/" target="_blank" class="btn btn-info">📖 看介紹</a>
+        </div>
+
+        <hr class="divider">
+
+        <div class="info-title">方案 B：意誠堂關帝廟</div>
+        <div class="info-row">市區大廟，有電梯，動線單純。</div>
+        <div class="tags"><span class="tag safe">✅ 香火鼎盛</span><span class="tag safe">✅ 不擠</span></div>
+        <div class="btn-group">
+            <a href="https://www.google.com/maps/search/?api=1&query=高雄意誠堂關帝廟" target="_blank" class="btn btn-map">📍 導航</a>
+            <a href="https://www.facebook.com/YiChengTang/" target="_blank" class="btn btn-info">📖 FB粉專</a>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <span class="card-icon">🥢</span>
+            <h3 class="card-title">午餐：推薦餐廳</h3>
+        </div>
+
+        <div class="info-title">方案 A：萬巒海鴻飯店</div>
+        <div class="info-row">吃豬腳/客家菜，有專屬素食菜單。</div>
+        <div class="tags"><span class="tag safe">✅ 超大停車場</span><span class="tag safe">✅ 出菜快</span></div>
+        <div class="btn-group">
+            <a href="https://www.google.com/maps/search/?api=1&query=萬巒海鴻飯店" target="_blank" class="btn btn-map">📍 導航</a>
+            <a href="https://www.haihon.com.tw/" target="_blank" class="btn btn-info">📖 官網</a>
+        </div>
+
+        <hr class="divider">
+
+        <div class="info-title">方案 B：漢來蔬食 (高雄)</div>
+        <div class="info-row">精緻港式素食，在百貨或飯店內。</div>
+        <div class="tags"><span class="tag safe">✅ 環境舒適</span><span class="tag safe">✅ 停車方便</span></div>
+        <div class="btn-group">
+            <a href="https://www.google.com/maps/search/?api=1&query=漢來蔬食" target="_blank" class="btn btn-map">📍 導航</a>
+            <a href="https://www.hilai-foods.com/brand-content/5/hilai-vegetarian" target="_blank" class="btn btn-info">📖 官網</a>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <span class="card-icon">🏨</span>
+            <h3 class="card-title">今晚住宿：高雄</h3>
+        </div>
+        <div class="info-title">方案 A：康橋商旅 (覺民館)</div>
+        <div class="info-row"><small>近交流道、免費點心</small></div>
+        <div class="btn-group">
+            <a href="https://www.google.com/maps/search/?api=1&query=康橋商旅覺民館" target="_blank" class="btn btn-hotel">🏨 導航</a>
+            <a href="https://www.kindness-hotel.com.tw/location-kaohsiung-juemin" target="_blank" class="btn btn-info">📖 官網</a>
+        </div>
+        
+        <hr class="divider">
+        
+        <div class="info-title">方案 B：捷絲旅 (站前館)</div>
+        <div class="info-row"><small>無障礙房型標準</small></div>
+        <div class="btn-group">
+            <a href="https://www.google.com/maps/search/?api=1&query=捷絲旅高雄站前館" target="_blank" class="btn btn-hotel">🏨 導航</a>
+            <a href="https://www.justsleep.com.tw/kaohsiungStation/tw" target="_blank" class="btn btn-info">📖 官網</a>
+        </div>
+    </div>
+</div>
+
+<!-- ================= 初四 ================= -->
+<div id="day4" class="day-content container">
+    <div class="card" style="border-top-color: #388E3C;">
+        <div class="card-header">
+            <span class="card-icon">🛑</span>
+            <h3 class="card-title">避開台南市區</h3>
+        </div>
+        <div class="btn-alert">
+            ❌ 市中心車子進不去<br>
+            請在 <strong>外圍 (安南/永康)</strong> 活動
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <span class="card-icon">🏮</span>
+            <h3 class="card-title">下午：推薦景點</h3>
+        </div>
+
+        <div class="info-title">方案 A：鹿耳門聖母廟</div>
+        <div class="info-row">全台最大廟宇，像紫禁城一樣。</div>
+        <div class="tags"><span class="tag safe">✅ 全程平面</span><span class="tag safe">✅ 過年氣氛</span></div>
+        <div class="btn-group">
+            <a href="https://www.google.com/maps/search/?api=1&query=正統鹿耳門聖母廟" target="_blank" class="btn btn-map">📍 導航</a>
+            <a href="https://www.luermenma.org.tw/" target="_blank" class="btn btn-info">📖 看介紹</a>
+        </div>
+
+        <hr class="divider">
+
+        <div class="info-title">方案 B：奇美幸福工廠</div>
+        <div class="info-row">室內吹冷氣，有包子DIY與展覽。</div>
+        <div class="tags"><span class="tag safe">✅ 避開博物館</span><span class="tag safe">✅ 好停車</span></div>
+        <div class="btn-group">
+            <a href="https://www.google.com/maps/search/?api=1&query=奇美食品幸福工廠" target="_blank" class="btn btn-map">📍 導航</a>
+            <a href="http://www.happychimei.com.tw/" target="_blank" class="btn btn-info">📖 看介紹</a>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <span class="card-icon">🥢</span>
+            <h3 class="card-title">用餐：推薦餐廳</h3>
+        </div>
+
+        <div class="info-title">方案 A：東東宴會式場</div>
+        <div class="info-row">大型婚宴餐廳 (永大館)，有素食套餐。</div>
+        <div class="tags"><span class="tag safe">✅ 專屬停車場</span><span class="tag safe">✅ 座位寬敞</span></div>
+        <div class="btn-group">
+            <a href="https://www.google.com/maps/search/?api=1&query=東東宴會式場永大館" target="_blank" class="btn btn-map">📍 導航</a>
+            <a href="https://banquet2.dondom.com.tw/" target="_blank" class="btn btn-info">📖 官網</a>
+        </div>
+
+        <hr class="divider">
+
+        <div class="info-title">方案 B：異人館 (連鎖簡餐)</div>
+        <div class="info-row">選擇多樣 (火鍋/定食)，有沙發座。</div>
+        <div class="tags"><span class="tag safe">✅ 連鎖店</span><span class="tag safe">✅ 好停車</span></div>
+        <div class="btn-group">
+            <a href="https://www.google.com/maps/search/?api=1&query=異人館咖啡部屋" target="_blank" class="btn btn-map">📍 導航</a>
+            <a href="http://www.ezkon.com.tw/" target="_blank" class="btn btn-info">📖 看菜單</a>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <span class="card-icon">🏨</span>
+            <h3 class="card-title">今晚住宿：台南</h3>
+        </div>
+        <div class="info-title">方案 A：雀客藏居 (永康)</div>
+        <div class="info-row"><small>平面停車場大、浴室標準</small></div>
+        <div class="btn-group">
+            <a href="https://www.google.com/maps/search/?api=1&query=雀客藏居台南永康" target="_blank" class="btn btn-hotel">🏨 導航</a>
+            <a href="https://www.checkinn.com.tw/check-inn-select-tainan-yongkang/" target="_blank" class="btn btn-info">📖 官網</a>
+        </div>
+        
+        <hr class="divider">
+        
+        <div class="info-title">方案 B：新大南科 (新市)</div>
+        <div class="info-row"><small>安靜單純、無障礙佳</small></div>
+        <div class="btn-group">
+            <a href="https://www.google.com/maps/search/?api=1&query=新大南科大飯店" target="_blank" class="btn btn-hotel">🏨 導航</a>
+            <a href="http://www.sendale.com.tw/" target="_blank" class="btn btn-info">📖 官網</a>
+        </div>
+    </div>
+</div>
+
+<!-- 底部導航 -->
+<nav class="navbar">
+    <button class="nav-item active" onclick="switchDay('day1', this)">
+        <div>1️⃣</div>
+        初一<br><small>花蓮</small>
+    </button>
+    <button class="nav-item" onclick="switchDay('day2', this)">
+        <div>2️⃣</div>
+        初二<br><small>台東</small>
+    </button>
+    <button class="nav-item" onclick="switchDay('day3', this)">
+        <div>3️⃣</div>
+        初三<br><small>高雄</small>
+    </button>
+    <button class="nav-item" onclick="switchDay('day4', this)">
+        <div>4️⃣</div>
+        初四<br><small>台南</small>
+    </button>
+</nav>
+
+<script>
+    function switchDay(dayId, btnElement) {
+        // 隱藏所有頁面
+        document.querySelectorAll('.day-content').forEach(el => el.classList.remove('active'));
+        // 移除所有按鈕 active 樣式
+        document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+        
+        // 顯示選中頁面
+        document.getElementById(dayId).classList.add('active');
+        // 增加按鈕 active 樣式
+        btnElement.classList.add('active');
+        
+        // 回到頂部
+        window.scrollTo(0, 0);
+    }
+</script>
+
+</body>
+</html>
